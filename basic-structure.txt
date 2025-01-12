@@ -1,0 +1,31 @@
+The Child Cares Vaccination Management System is a comprehensive and user-friendly platform designed to streamline vaccination processes for parents, healthcare providers, and administrators. This system ensures efficient vaccine scheduling, record-keeping, and accessibility for all stakeholders.
+
+Key Features:
+Parent Dashboard:
+
+Allows parents to register and manage their profiles.
+Provides a clear view of vaccination schedules for their children.
+Enables booking appointments at nearby hospitals or clinics.
+Tracks vaccination history and upcoming vaccines.
+Admin Dashboard:
+
+Centralized management of vaccine inventory and schedules.
+View and manage parent and hospital accounts.
+Generate detailed reports for vaccination statistics and trends.
+Monitor requests for appointments and vaccine availability.
+Hospital Panel:
+
+Register hospital details, including location and contact information.
+Manage vaccination schedules and confirm appointments.
+Update vaccine inventory status in real time.
+Dynamic Notifications:
+
+Alerts for upcoming vaccinations.
+Appointment confirmations or rejections.
+Notifications for new vaccine availability or schedule changes.
+Technology Stack:
+Frontend: Tailwind CSS for responsive and modern designs, jQuery for dynamic interactions.
+Backend: PHP for robust server-side processing.
+Database: MySQL for secure and efficient data storage and management.
+Target Audience:
+Parents: To ensure timely vaccinations for their children.
