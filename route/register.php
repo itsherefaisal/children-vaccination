@@ -1,11 +1,30 @@
 <?php
     define("ROUTE", 'REGISTER');
     require_once('../includes/header.php');
+    require_once('../includes/redirectSafety.php');
 ?>
 
 <section class="min-h-[90vh] py-16 rounded-lg flex items-center justify-center w-full"
-    style="background-image: url('./assets/images/bg-minimalist-background-blur.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    style="background-image: url('../assets/images/bg-minimalist-background-blur.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="max-w-2xl w-[700px] bg-white pt-14 pb-4 rounded-lg">
+        <div id="error-modal" class="modal" style="display: none;">
+            <div class="modal-content bg-red-200 rounded-xl border-4 flex flex-col border-red-400">
+                <div class="closee w-full flex items-center justify-end">
+                    <span class="close flex items-center justify-center rounded-full p-1 group hover:bg-red-400"
+                        onclick="closeModal()"><svg xmlns="http://www.w3.org/2000/svg"
+                            class="text-red-700 group-hover:text-red-900 size-6" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M10.5859 12L2.79297 4.20706L4.20718 2.79285L12.0001 10.5857L19.793 2.79285L21.2072 4.20706L13.4143 12L21.2072 19.7928L19.793 21.2071L12.0001 13.4142L4.20718 21.2071L2.79297 19.7928L10.5859 12Z">
+                            </path>
+                        </svg></span>
+                </div>
+                <h2 id="modal-title">Error</h2>
+                <p id="modal-message">Something went wrong.</p>
+            </div>
+        </div>
+
+
         <h2 class="text-center text-xl text-[#66347F] font-bold">REGISTER YOUR PARENT ACCOUNT</h2>
         <form id="register-form" class="space-y-3 p-8">
             <div class="flex items-center w-full gap-2 justify-center">
@@ -145,6 +164,102 @@
 <?php
     require_once('../includes/footer.php');
 ?>
+
+<script>
+function showModal(title, message) {
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modal = document.getElementById('error-modal');
+
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+
+    modal.style.display =
+        'block';
+}
+
+function closeModal() {
+    const modal = document.getElementById('error-modal');
+    modal.style.display =
+        'none';
+}
+$(document).ready(function() {
+
+
+    $('#register-form').on('submit', function(e) {
+        e.preventDefault();
+        const formData = $(this).serialize();
+
+        $.ajax({
+            url: '../controller/register.controller.php',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                const res = JSON.parse(response);
+
+                if (res.status === 'success') {
+                    const emailValue = $('#Email').val();
+                    window.location.href = ("./login.php?register_success=" + emailValue);
+                    $('#register-form')[0].reset();
+                } else if (res.status === 'error' && res.errors && Array.isArray(res
+                        .errors)) {
+                    res.errors.forEach(error => {
+                        switch (error.code) {
+                            case 1001:
+                                showModal('First Name Error', error.message);
+                                break;
+                            case 1002:
+                                showModal('Last Name Error', error.message);
+                                break;
+                            case 1003:
+                                showModal('Email Error', error.message);
+                                break;
+                            case 1004:
+                                showModal('Password Error', error.message);
+                                break;
+                            case 1005:
+                                showModal('Confirm Password Error', error.message);
+                                break;
+                            case 1006:
+                                showModal('Country Error', error.message);
+                                break;
+                            case 1007:
+                                showModal('City Error', error.message);
+                                break;
+                            case 1008:
+                                showModal('Address Error', error.message);
+                                break;
+                            case 1009:
+                                showModal('Phone Number Error', error.message);
+                                break;
+                            case 1010:
+                                showModal('Type Error', error.message);
+                                break;
+                            case 1011:
+                                showModal('Duplicate Email Error', error.message);
+                                break;
+                            case 1012:
+                                showModal('Registration Error', error.message);
+                                break;
+                            default:
+                                showModal('Unknown Error',
+                                    'An unknown error occurred. Please try again.'
+                                );
+                        }
+                    });
+                } else {
+                    showModal('General Error',
+                        'An error occurred. Please try again later.');
+                }
+
+            },
+            error: function(xhr, status, error) {
+                showModal('An unexpected error occurred. Please try again later.');
+            },
+        });
+    });
+});
+</script>
 </body>
 
 </html>

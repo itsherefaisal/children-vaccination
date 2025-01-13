@@ -121,7 +121,7 @@ if (ROUTE === "index") {
                     Settings
                 </div>
             </li>
-            <li onclick="window.location.href = '<?= ROUTE === 'index' ? '../controller/logout.controller.php' : '../../controller/logout.controller.php' ?>'"
+            <li onclick="window.location.href = '<?= $PATH === '.' ? './route' : '.' ?>/logout.php'"
                 class="mt-6 group relative flex items-center justify-center p-3 rounded-full cursor-pointer select-none bg-red-500 transition-bg duration-200 hover:bg-red-400">
                 <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" class="size-6 text-gray-200"
                         viewBox="0 0 24 24" fill="currentColor">

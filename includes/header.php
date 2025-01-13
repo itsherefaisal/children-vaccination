@@ -1,4 +1,5 @@
 <?php 
+session_start();
 
 $PATH = '';
 
@@ -35,6 +36,43 @@ if (ROUTE === "index") {
         -webkit-box-shadow: 0 0 0px 1000px transparent inset;
         transition: background-color 5000s ease-in-out 0s;
     }
+
+    <?=ROUTE==='REGISTER'? '.modal {
+display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    ' : ''?>
     </style>
 </head>
 
@@ -69,12 +107,30 @@ if (ROUTE === "index") {
                         class="text-sm text-gray-700 hover:text-gray-950">Contact us</a>
                 </li>
             </ul>
-            <div class="flex items-center gap-2 text-white ">
+            <div class="flex items-center gap-2 text-white">
+                <?php if (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email']) || isset($_SESSION['hospital_id']) && isset($_SESSION['hospital_email'])): ?>
+                <a href="<?= $PATH ?><?= (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email'])) ? '/parent/' : '/hospital/' ?>"
+                    class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white">
+                    Dashboard
+                </a>
+
+                <a href="<?= $PATH?>/controller/logout.controller.php"
+                    class="text-sm text-[#F5EFFF] bg-red-400 hover:bg-red-500 p-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M5 22C4.44772 22 4 21.5523 4 21V3C4 2.44772 4.44772 2 5 2H19C19.5523 2 20 2.44772 20 3V6H18V4H6V20H18V18H20V21C20 21.5523 19.5523 22 19 22H5ZM18 16V13H11V11H18V8L23 12L18 16Z">
+                        </path>
+                    </svg>
+                </a>
+                <?php else: ?>
                 <a href="<?= $PATH === '.' ? "$PATH/route" : '.' ?>/login.php"
-                    class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white <?= ROUTE === 'LOGIN' ? 'bg-[#2E073F]': ' ' ?>">Login</a>
+                    class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white <?= ROUTE === 'LOGIN' ? 'bg-[#2E073F]' : '' ?>">Login</a>
+
                 <a href="<?= $PATH === '.' ? "$PATH/route" : '.' ?>/register.php"
-                    class="text-sm text-[#F5EFFF] border-2 border-[#CB9DF0] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white <?= ROUTE === 'REGISTER' ? 'bg-[#2E073F]': 'bg-[#66347F]' ?>">Register</a>
+                    class="text-sm text-[#F5EFFF] border-2 border-[#CB9DF0] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white <?= ROUTE === 'REGISTER' ? 'bg-[#2E073F]' : 'bg-[#66347F]' ?>">Register</a>
+                <?php endif; ?>
             </div>
+
         </div>
 
         <button id="mobile-menu-button"

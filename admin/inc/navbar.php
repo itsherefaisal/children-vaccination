@@ -19,7 +19,7 @@ if (ROUTE === "index") {
     <div class="relative flex items-center">
 
         <div class="parent-name text-purple-800 mr-4">
-            Welcome, <?= $PARENT_FIRST ?? 'UNKNOW'?>
+            Welcome, Parent name
         </div>
         <div>
             <input type="text" id="Search" placeholder="Search for hospital or vaccines"

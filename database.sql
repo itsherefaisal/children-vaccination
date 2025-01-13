@@ -33,11 +33,9 @@ CREATE TABLE hospitals (
     password VARCHAR(255) NOT NULL,
     address TEXT NOT NULL,
     contact_number VARCHAR(15) NOT NULL,
-    availability VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state VARCHAR(100) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    operating_hours VARCHAR(100),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -57,8 +55,11 @@ CREATE TABLE vaccines (
     vaccine_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    doses_required INT NOT NULL
+    doses_required INT NOT NULL,
+    recommended_age VARCHAR(50) DEFAULT NULL,
+    status ENUM('Available', 'Unavailable') DEFAULT 'Available'
 );
+
 
 -- Create Vaccination Schedule Table
 CREATE TABLE vaccination_schedule (

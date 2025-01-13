@@ -1,10 +1,16 @@
+<?php 
+define("ROUTE", 'index');
+require_once("./inc/securityCheck.php");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Child Cares Vaccination</title>
+    <title>Child Cares Vaccination | Parent</title>
     <link rel="icon" type="image/x-icon" href="../assets/images/logo.png">
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +27,6 @@
 
 <body class="bg-gray-100 overflow-hidden">
     <?php
-        define("ROUTE", 'index');
         require_once('./inc/navbar.php');
     ?>
 
@@ -34,37 +39,90 @@
                 <h3 class="text-center py-2">Covid 19 Overall Cases</h3>
                 <canvas id="covidChart" class="w-full" height="250px"></canvas>
             </div>
+            <?php 
+            $parent_id = $_SESSION['parent_id'];
+
+            $sql = "
+                SELECT 
+                    status,
+                    COUNT(*) AS count
+                FROM 
+                    appointments
+                WHERE 
+                    parent_id = ?
+                GROUP BY 
+                    status
+            ";
+        
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param("i", $parent_id);
+                $stmt->execute();
+        
+                $result = $stmt->get_result();
+        
+                $approvedCount = 0;
+                $rejectedCount = 0;
+                $pendingCount = 0;
+        
+                while ($row = $result->fetch_assoc()) {
+                    switch ($row['status']) {
+                        case 'Approved':
+                            $approvedCount = $row['count'];
+                            break;
+                        case 'Rejected':
+                            $rejectedCount = $row['count'];
+                            break;
+                        case 'Pending':
+                            $pendingCount = $row['count'];
+                            break;
+                    }
+                }
+                $stmt->close();
+        
+            } else {
+                echo "Error: Failed to prepare the SQL statement.";
+            }
+            if ($approvedCount || $rejectedCount || $pendingCount) {
+                ?>
             <div class="status-appointments p-4">
                 <h2 class="text-xl font-bold my-4 pl-4">Appointments</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 overflow-x-auto gap-4">
-                    <!-- Approved -->
                     <div class="bg-green-100 text-green-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">48</h2>
+                        <h2 class="text-3xl font-bold"><?= $approvedCount?></h2>
                         <p class="text-lg">Approved</p>
                     </div>
-                    <!-- Rejected -->
                     <div class="bg-red-100 text-red-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">12</h2>
+                        <h2 class="text-3xl font-bold"><?= $rejectedCount?></h2>
                         <p class="text-lg">Rejected</p>
                     </div>
-                    <!-- Pending -->
                     <div class="bg-yellow-100 text-yellow-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">15</h2>
+                        <h2 class="text-3xl font-bold"><?= $pendingCount?></h2>
                         <p class="text-lg">Pending</p>
                     </div>
                 </div>
             </div>
+            <?php
+                
+            } else {
+                ?>
+            <div class="status-appointments p-4">
+                <h2 class="text-xl font-bold my-4 pl-4">Appointments</h2>
+                <div class="w-full flex items-center justify-center py-16 overflow-x-auto gap-4">
+                    <h3 class="text-center ">No Appointments Found</h3>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
 
         </section>
     </main>
     <script src="../frameworks/chartjs/chart.js"></script>
     <script defer>
-    // Fetch COVID-19 data
     async function fetchCovidData() {
         const response = await fetch('https://disease.sh/v3/covid-19/historical/all?lastdays=all');
         const data = await response.json();
 
-        // Process data for yearly statistics
         const years = {};
         Object.keys(data.cases).forEach(date => {
             const year = new Date(date).getFullYear();
@@ -82,7 +140,6 @@
         return years;
     }
 
-    // Render Chart.js chart
     async function renderCovidChart() {
         const covidData = await fetchCovidData();
         const years = Object.keys(covidData);
@@ -146,7 +203,7 @@
     }
 
     renderCovidChart();
-    
+
     const toggleBtn = document.getElementById('noti-toggle-btn');
     const notiContainer = document.getElementById('noti-container');
 

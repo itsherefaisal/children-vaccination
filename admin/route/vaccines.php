@@ -1,9 +1,3 @@
-<?php 
-        define("ROUTE", 'vaccines');
-        require_once("../inc/securityCheck.php");
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,6 +26,7 @@
 
 <body class="bg-gray-100 overflow-hidden">
     <?php
+        define("ROUTE", 'vaccines');
         require_once('../inc/navbar.php');
     ?>
     <main class="container-main w-full  flex items-center">
@@ -39,7 +34,7 @@
         require_once('../inc/aside.php');
     ?>
         <section class="w-full max-w-[1700px] mx-auto h-full bg-white p-8 overflow-x-hidden overflow-y-auto">
-            <h2 class="text-2xl font-bold mb-6 mt-10 text-center text-purple-600">All Vaccines</h2>
+            <h2 class="text-2xl font-bold mb-6 mt-10 text-center text-green-600">All Vaccines</h2>
             <table id="vaccines-details" class="min-w-full bg-white table-auto border-collapse border border-gray-300">
                 <thead>
                     <tr class="bg-gray-100 text-gray-800">
@@ -51,28 +46,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                        require_once '../../config.php';
-
-                        $query = "SELECT vaccine_id, name AS vaccine_name, recommended_age, doses_required, status FROM vaccines";
-                        $result = $conn->query($query);
-
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo '<tr>';
-                                echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['vaccine_id']) . '</td>';
-                                echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['vaccine_name']) . '</td>';
-                                echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['recommended_age']) . '</td>';
-                                echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['doses_required']) . '</td>';
-                                echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['status']) . '</td>';
-                                echo '</tr>';
-                            }
-                        } else {
-                            echo '<tr><td colspan="5" class="border border-gray-300 px-4 py-2 text-center">No vaccines found</td></tr>';
-                        }
-                    
-                        $conn->close();
-                        ?>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">1</td>
+                        <td class="border border-gray-300 px-4 py-2">Polio Vaccine</td>
+                        <td class="border border-gray-300 px-4 py-2">Birth</td>
+                        <td class="border border-gray-300 px-4 py-2">2</td>
+                        <td class="border border-gray-300 px-4 py-2">Available</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">2</td>
+                        <td class="border border-gray-300 px-4 py-2">MMR Vaccine</td>
+                        <td class="border border-gray-300 px-4 py-2">12-15 Months</td>
+                        <td class="border border-gray-300 px-4 py-2">1</td>
+                        <td class="border border-gray-300 px-4 py-2">Available</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">3</td>
+                        <td class="border border-gray-300 px-4 py-2">Hepatitis B Vaccine</td>
+                        <td class="border border-gray-300 px-4 py-2">Birth</td>
+                        <td class="border border-gray-300 px-4 py-2">3</td>
+                        <td class="border border-gray-300 px-4 py-2">Available</td>
+                    </tr>
                 </tbody>
             </table>
         </section>

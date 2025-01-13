@@ -7,17 +7,7 @@
 <section class="min-h-[90vh] py-10 rounded-lg flex items-center justify-center w-full"
     style="background-image: url('../assets/images/bg-minimalist-background-blur.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="max-w-2xl w-[400px] bg-white pt-14 pb-4 rounded-lg">
-        <h2 class="text-center text-xl text-[#66347F] font-bold">LOGIN YOUR PARENT ACCOUNT</h2>
-        <?php 
-        if (isset($_GET['register_success'])) {
-        ?>
-
-        <div class="reg-suc bg-purple-400 p-4 rounded-xl mx-8 my-2">
-            <h3 class="text-center text-lg py-2 text-green-400 font-bold">You have created new account</h3>
-            <p class="text-green-200 text-sm text-center">Email: <?= $_GET['register_success']?></p>
-        </div>
-
-        <?php } ?>
+        <h2 class="text-center text-xl text-[#66347F] font-bold">LOGIN YOUR HOSPITAL ACCOUNT</h2>
 
         <form id="login-form" class="space-y-3 p-8">
             <div>
@@ -46,7 +36,7 @@
                 </label>
             </div>
             <div class="other-log">
-                <a href="./hospital_login.php" class="text-xs pl-2 text-red-500 font-bold">Login as Hospital</a>
+                <a href="./login.php" class="text-xs pl-2 text-red-500 font-bold">Login as Parent</a>
             </div>
             <div class="flex items-center justify-end px-2">
                 <button
@@ -88,7 +78,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '../controller/login.controller.php',
+            url: '../controller/login_hospital.controller.php',
             method: 'POST',
             data: formData,
             dataType: 'json',

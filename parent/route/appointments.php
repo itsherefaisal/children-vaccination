@@ -1,3 +1,9 @@
+<?php 
+        define("ROUTE", 'appointments');
+        require_once("../inc/securityCheck.php");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +32,6 @@
 
 <body class="bg-gray-100 overflow-hidden">
     <?php
-        define("ROUTE", 'appointments');
         require_once('../inc/navbar.php');
     ?>
     <main class="container-main w-full  flex items-center">
@@ -35,12 +40,35 @@
     ?>
 
         <section class="w-full max-w-[1700px] mx-auto h-full bg-white p-8 overflow-x-hidden overflow-y-auto">
-            <h2 class="text-2xl font-bold mb-6 mt-10 text-center text-blue-600">Appointments</h2>
-            <div class="w-full flex justify-end mb-4">
-                <button class="py-2 px-4 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">
-                    Add New Appointment
+            <div class="w-full flex items-center justify-between py-4">
+                <h2 class="text-2xl font-bold text-center text-purple-600">Appointment Details</h2>
+                <button onclick="window.location.href = './make_appointment.php'"
+                    class="py-2 px-4 bg-purple-500 transition hover:bg-purple-600 text-gray-200 rounded-xl">
+                    Make Appointment
                 </button>
             </div>
+            <?php 
+            
+            require_once '../../config.php';
+
+            $query = "
+                SELECT 
+                    a.appointment_id, 
+                    CONCAT(c.name) AS patient_name,
+                    v.name AS vaccine_name,
+                    a.appointment_date,
+                    a.status
+                FROM appointments a
+                JOIN children c ON a.child_id = c.child_id
+                JOIN vaccines v ON a.vaccine_id = v.vaccine_id
+                ORDER BY a.appointment_date ASC
+            ";
+
+            $result = $conn->query($query);
+            $null_appointments = null;
+            if ($result->num_rows > 0) {
+              $null_appointments = false;  
+            ?>
             <table id="appointments-details"
                 class="min-w-full bg-white table-auto border-collapse border border-gray-300">
                 <thead>
@@ -54,45 +82,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">1</td>
-                        <td class="border border-gray-300 px-4 py-2">Alice Smith</td>
-                        <td class="border border-gray-300 px-4 py-2">Polio Vaccine</td>
-                        <td class="border border-gray-300 px-4 py-2">2025-01-15</td>
-                        <td class="border border-gray-300 px-4 py-2">Scheduled</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
-                            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Cancel</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">2</td>
-                        <td class="border border-gray-300 px-4 py-2">John Doe</td>
-                        <td class="border border-gray-300 px-4 py-2">Hepatitis B Vaccine</td>
-                        <td class="border border-gray-300 px-4 py-2">2025-01-20</td>
-                        <td class="border border-gray-300 px-4 py-2">Completed</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <button class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600">View</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">3</td>
-                        <td class="border border-gray-300 px-4 py-2">Emily Johnson</td>
-                        <td class="border border-gray-300 px-4 py-2">MMR Vaccine</td>
-                        <td class="border border-gray-300 px-4 py-2">2025-02-05</td>
-                        <td class="border border-gray-300 px-4 py-2">Pending</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
-                            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Cancel</button>
-                        </td>
-                    </tr>
+                    <?php
+                        while ($row = $result->fetch_assoc()) {
+                            $A_ID = $row['appointment_id'];
+                            $status = htmlspecialchars($row['status']);
+                        
+                            echo '<tr>';
+                            echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['appointment_id']) . '</td>';
+                            echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['patient_name']) . '</td>';
+                            echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['vaccine_name']) . '</td>';
+                            echo '<td class="border border-gray-300 px-4 py-2">' . htmlspecialchars($row['appointment_date']) . '</td>';
+                            echo '<td class="border border-gray-300 px-4 py-2">' . $status . '</td>';
+                            echo '<td class="border border-gray-300 px-4 py-2 text-start">';
+                        
+                            if ($status === 'Completed') {
+                                echo "<button onclick='window.location.href = `./view_appointment.php?appointment_id={$A_ID}`' class='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'>View</button>";
+                            } else {
+                                echo "<button onclick='window.location.href = `./edit_appointment.php?appointment_id={$A_ID}`' class='bg-blue-500 mr-2 text-white px-3 py-1 rounded hover:bg-blue-600'>Edit</button>";
+                                echo "<button onclick='window.location.href = `./delete_appointment.php?appointment_id={$A_ID}`' class='bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600'>Cancel</button>";
+                            }
+                            echo '</td>';
+                            echo '</tr>';
+                        }
+                    ?>
                 </tbody>
             </table>
+            <?php 
+            } else {
+                $null_appointments = true;  
+                echo '
+                <div>
+                    <div class="px-4 py-16 text-red-500 text-center">No appointments found</div>
+                </div>';
+            }
+        
+            $conn->close();
+            ?>
         </section>
 
     </main>
+    <?php 
+            if (!$null_appointments) {
+                echo '<script src="../../frameworks/datatable/datatable.js"></script>';
+            }
+        ?>
 
-    <script src="../../frameworks/datatable/datatable.js"></script>
     <script defer>
     const toggleBtn = document.getElementById('noti-toggle-btn');
     const notiContainer = document.getElementById('noti-container');
@@ -111,6 +145,10 @@
     notiContainer.addEventListener('click', (e) => {
         e.stopPropagation();
     });
+    <?php 
+    
+    if (!$null_appointments) {
+    ?>
     document.addEventListener("DOMContentLoaded", function() {
         const table = new DataTable("#appointments-details", {
             searchable: true,
@@ -120,6 +158,7 @@
             perPageSelect: [5, 10, 15],
         });
     });
+    <?php }?>
     </script>
 </body>
 

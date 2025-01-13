@@ -93,10 +93,19 @@
                 administrators to keep track of all vaccination activities. With simple registration, you can access
                 all features, including scheduling, reminders, and a detailed vaccination record history.</p>
 
+            <?php 
+             if (!isset($_SESSION['parent_id'])) {
+            ?>
             <div class="mt-8">
-                <a href="./register.html"
-                    class="text-md text-[#F5EFFF] bg-[#66347F] border-2 border-[#CB9DF0] px-8 py-3 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white">Register</a>
+                <a href="./route/register.php"
+                    class="text-md text-[#F5EFFF] bg-[#66347F] border-2 border-[#CB9DF0] px-8 py-3 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white">
+                    Register
+                </a>
             </div>
+            <?php
+             }
+            ?>
+
         </div>
         <div class="relative">
             <img src="./assets/images/children-clinic.jpg" alt="Register Now Image"
@@ -214,7 +223,6 @@ $(document).ready(function() {
 });
 
 
-// Toggle Mobile Menu
 document.getElementById("mobile-menu-button").addEventListener("click", () => {
     const menu = document.getElementById("mobile-menu");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
