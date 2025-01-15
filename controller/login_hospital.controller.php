@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $sql = "SELECT hospital_id, email,  password FROM hospitals WHERE email = '$email'";
+    $sql = "SELECT hospital_id, email, password FROM hospitals WHERE email = '$email'";
     $result = $conn->query($sql);
 
     if ($result->num_rows === 1) {

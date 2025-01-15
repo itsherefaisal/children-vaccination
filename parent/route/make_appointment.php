@@ -62,7 +62,7 @@
                     <div>
                         <label for="child" class="block text-sm font-medium text-gray-700">Select Child</label>
                         <select id="child" name="child" required
-                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#66347F] focus:border-[#66347F] sm:text-sm">
+                            class="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#66347F] focus:border-[#66347F] sm:text-sm">
                             <option value="" disabled selected>Select Child</option>
                             <?php
                             if ($childrenResult->num_rows > 0) {
@@ -79,12 +79,12 @@
                     <div>
                         <label for="hospital" class="block text-sm font-medium text-gray-700">Select Hospital</label>
                         <select id="hospital" name="hospital" required
-                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#66347F] focus:border-[#66347F] sm:text-sm">
+                            class="mt-1 block text-black w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#66347F] focus:border-[#66347F] sm:text-sm">
                             <option value="" disabled selected>Select Hospital</option>
                             <?php
                             if ($hospitalsResult->num_rows > 0) {
                                 while ($row = $hospitalsResult->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['hospital_id']) . "'>" . htmlspecialchars($row['hospital_name']) . "</option>";
+                                    echo "<option class='text-black' value='" . htmlspecialchars($row['hospital_id']) . "'>" . htmlspecialchars($row['hospital_name']) . "</option>";
                                 }
                             } else {
                                 echo "<option value='' disabled>No Hospitals Found</option>";
@@ -98,15 +98,6 @@
                         <select id="vaccine" name="vaccine" required
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#66347F] focus:border-[#66347F] sm:text-sm">
                             <option value="" disabled selected>Select Vaccine</option>
-                            <?php
-                            if ($vaccinesResult->num_rows > 0) {
-                                while ($row = $vaccinesResult->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['vaccine_id']) . "'>" . htmlspecialchars($row['vaccine_name']) . "</option>";
-                                }
-                            } else {
-                                echo "<option value='' disabled>No Vaccines Found</option>";
-                            }
-                            ?>
                         </select>
                     </div>
 
@@ -150,7 +141,71 @@
     notiContainer.addEventListener('click', (e) => {
         e.stopPropagation();
     });
+
     $(document).ready(function() {
+        $('#hospital').on('change', function() {
+            const hospitalId = $(this).val();
+
+            if (!hospitalId) {
+                $('#vaccine').html(
+                    '<option value="" disabled selected>Select hospital to fetch vaccines</option>'
+                );
+                return;
+            }
+
+            $.ajax({
+                url: '../controller/fetch_vaccines_from_hospital.controller.php',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    hospital_id: hospitalId
+                },
+                success: function(response) {
+                    if (!response || !response.status) {
+                        $('#vaccine').html(
+                            '<option value="" disabled>Invalid response from server</option>'
+                        );
+                        return;
+                    }
+
+                    switch (response.status) {
+                        case 'success':
+                            $('#vaccine').html(
+                                '<option value="" disabled selected>Select Vaccine</option>'
+                            );
+                            response.data.forEach(vaccine => {
+                                const optionText = vaccine.out_of_stock ?
+                                    `${vaccine.name} - Out of Stock` :
+                                    vaccine.name;
+                                const disabledAttr = vaccine.out_of_stock ?
+                                    'disabled' : '';
+                                $('#vaccine').append(
+                                    `<option value="${vaccine.vaccine_id}" ${disabledAttr}>${optionText}</option>`
+                                );
+                            });
+                            break;
+
+                        case 'error':
+                            $('#vaccine').html('<option value="" disabled>' + response
+                                .message + '</option>');
+                            break;
+
+                        default:
+                            $('#vaccine').html(
+                                '<option value="" disabled>Unexpected response status</option>'
+                            );
+                    }
+                },
+                error: function() {
+                    $('#vaccine').html(
+                        '<option value="" disabled>Error fetching vaccines. Please try again later.</option>'
+                    );
+                }
+            });
+        });
+
+
+
         $('#addAppointmentForm').on('submit', function(e) {
             e.preventDefault();
 
@@ -183,7 +238,8 @@
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                     alert(
-                        'An error occurred while adding the appointment. Please try again.');
+                        'An error occurred while adding the appointment. Please try again.'
+                    );
                 },
             });
         });

@@ -51,6 +51,8 @@
             
             require_once '../../config.php';
 
+            $parent_id = $_SESSION['parent_id'];
+
             $query = "
                 SELECT 
                     a.appointment_id, 
@@ -61,10 +63,15 @@
                 FROM appointments a
                 JOIN children c ON a.child_id = c.child_id
                 JOIN vaccines v ON a.vaccine_id = v.vaccine_id
+                WHERE c.parent_id = ?
                 ORDER BY a.appointment_date ASC
             ";
-
-            $result = $conn->query($query);
+            
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $parent_id);
+            $stmt->execute();
+            
+            $result = $stmt->get_result();
             $null_appointments = null;
             if ($result->num_rows > 0) {
               $null_appointments = false;  
@@ -97,10 +104,10 @@
                         
                             if ($status === 'Completed') {
                                 echo "<button onclick='window.location.href = `./view_appointment.php?appointment_id={$A_ID}`' class='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'>View</button>";
-                            } else {
+                            } elseif ($status === 'Pending') {
                                 echo "<button onclick='window.location.href = `./edit_appointment.php?appointment_id={$A_ID}`' class='bg-blue-500 mr-2 text-white px-3 py-1 rounded hover:bg-blue-600'>Edit</button>";
                                 echo "<button onclick='window.location.href = `./delete_appointment.php?appointment_id={$A_ID}`' class='bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600'>Cancel</button>";
-                            }
+                            } 
                             echo '</td>';
                             echo '</tr>';
                         }

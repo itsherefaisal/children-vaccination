@@ -1,5 +1,3 @@
-CREATE DATABASE vaccination_management;
-USE vaccination_management;
 
 -- Create Admins Table
 CREATE TABLE admins (
@@ -60,7 +58,15 @@ CREATE TABLE vaccines (
     status ENUM('Available', 'Unavailable') DEFAULT 'Available'
 );
 
-
+-- Create Hospital Vaccines Table
+CREATE TABLE hospital_vaccines (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hospital_id INT NOT NULL,
+    vaccine_id INT NOT NULL,
+    stock_available INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (hospital_id) REFERENCES hospitals(hospital_id) ON DELETE CASCADE,
+    FOREIGN KEY (vaccine_id) REFERENCES vaccines(vaccine_id) ON DELETE CASCADE
+);
 -- Create Vaccination Schedule Table
 CREATE TABLE vaccination_schedule (
     schedule_id INT AUTO_INCREMENT PRIMARY KEY,

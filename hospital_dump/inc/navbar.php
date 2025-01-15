@@ -18,11 +18,8 @@ if (ROUTE === "index") {
     </a>
     <div class="relative flex items-center">
 
-        <div class="parent-name text-purple-800 mr-4">
-            Hospital, <?= $HOSPITAL_NAME ?? 'UNKNOW'?>
-        </div>
         <div>
-            <input type="text" id="Search" placeholder="Search for hospital or vaccines"
+            <input type="text" id="Search" placeholder="Search for vaccines or appointments"
                 class="w-[250px] rounded-md border-gray-200 py-2 p-3 text-black shadow-sm sm:text-sm" />
         </div>
         <div class="noti relative">
