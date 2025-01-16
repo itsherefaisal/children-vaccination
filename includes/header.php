@@ -108,10 +108,10 @@ display: none;
                 </li>
             </ul>
             <div class="flex items-center gap-2 text-white">
-                <?php if (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email']) || isset($_SESSION['hospital_id']) && isset($_SESSION['hospital_email'])): ?>
-                <a href="<?= $PATH ?><?= (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email'])) ? '/parent/' : '/hospital/' ?>"
+                <?php if (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email']) || isset($_SESSION['hospital_id']) && isset($_SESSION['hospital_email']) || isset($_SESSION['admin_id']) && isset($_SESSION['admin_email'])): ?>
+                <a href="<?= $PATH ?><?= (isset($_SESSION['parent_id']) && isset($_SESSION['parent_email'])) ? '/parent/' : (isset($_SESSION['hospital_id']) && isset($_SESSION['hospital_email']) ? '/hospital/' : '/admin/') ?>"
                     class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white">
-                    Dashboard
+                    <?= isset($_SESSION['admin_id']) ? 'Admin Panel' : 'Dashboard' ?>
                 </a>
 
                 <a href="<?= $PATH?>/controller/logout.controller.php"
@@ -124,11 +124,12 @@ display: none;
                 </a>
                 <?php else: ?>
                 <a href="<?= $PATH === '.' ? "$PATH/route" : '.' ?>/login.php"
-                    class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white <?= ROUTE === 'LOGIN' ? 'bg-[#2E073F]' : '' ?>">Login</a>
+                    class="text-sm text-[#66347F] border-2 border-[#66347F] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:bg-[#66347F] hover:text-white <?= ROUTE === 'LOGIN' ? 'text-white bg-[#2E073F]' : '' ?>">Login</a>
 
                 <a href="<?= $PATH === '.' ? "$PATH/route" : '.' ?>/register.php"
                     class="text-sm text-[#F5EFFF] border-2 border-[#CB9DF0] px-6 py-2 rounded-md transition duration-200 hover:shadow-sm hover:border-[#CDC1FF] hover:text-white <?= ROUTE === 'REGISTER' ? 'bg-[#2E073F]' : 'bg-[#66347F]' ?>">Register</a>
                 <?php endif; ?>
+
             </div>
 
         </div>

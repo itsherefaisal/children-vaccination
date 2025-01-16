@@ -40,53 +40,58 @@ require_once("./inc/securityCheck.php");
                 <canvas id="covidChart" class="w-full" height="250px"></canvas>
             </div>
             <?php 
-            $parent_id = $_SESSION['parent_id'];
-
-            $sql = "
-                SELECT 
-                    status,
-                    COUNT(*) AS count
-                FROM 
-                    appointments
-                WHERE 
-                    parent_id = ?
-                GROUP BY 
-                    status
-            ";
-        
-            if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("i", $parent_id);
-                $stmt->execute();
-        
-                $result = $stmt->get_result();
-        
-                $approvedCount = 0;
-                $rejectedCount = 0;
-                $pendingCount = 0;
-        
-                while ($row = $result->fetch_assoc()) {
-                    switch ($row['status']) {
-                        case 'Approved':
-                            $approvedCount = $row['count'];
-                            break;
-                        case 'Rejected':
-                            $rejectedCount = $row['count'];
-                            break;
-                        case 'Pending':
-                            $pendingCount = $row['count'];
-                            break;
+                $parent_id = $_SESSION['parent_id'];
+                
+                $sql = "
+                    SELECT 
+                        status,
+                        COUNT(*) AS count
+                    FROM 
+                        appointments
+                    WHERE 
+                        parent_id = ?
+                    GROUP BY 
+                        status
+                ";
+                
+                if ($stmt = $conn->prepare($sql)) {
+                    $stmt->bind_param("i", $parent_id);
+                    $stmt->execute();
+                
+                    $result = $stmt->get_result();
+                
+                    $approvedCount = 0;
+                    $rejectedCount = 0;
+                    $pendingCount = 0;
+                    $completedCount = 0;
+                
+                    while ($row = $result->fetch_assoc()) {
+                        switch ($row['status']) {
+                            case 'Approved':
+                                $approvedCount = $row['count'];
+                                break;
+                            case 'Rejected':
+                                $rejectedCount = $row['count'];
+                                break;
+                            case 'Pending':
+                                $pendingCount = $row['count'];
+                                break;
+                            case 'Completed':
+                                $completedCount = $row['count'];
+                                break;
+                        }
                     }
+                    $stmt->close();
+                
+                } else {
+                    echo "Error: Failed to prepare the SQL statement.";
                 }
-                $stmt->close();
-        
-            } else {
-                echo "Error: Failed to prepare the SQL statement.";
-            }
-            if ($approvedCount || $rejectedCount || $pendingCount) {
+                
+                if ($approvedCount || $rejectedCount || $pendingCount || $completedCount) {
                 ?>
             <div class="status-appointments p-4">
                 <h2 class="text-xl font-bold my-4 pl-4">Appointments</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 overflow-x-auto gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-4 overflow-x-auto gap-4">
                     <div class="bg-green-100 text-green-800 rounded-xl p-4 flex flex-col items-center justify-center">
                         <h2 class="text-3xl font-bold"><?= $approvedCount?></h2>
                         <p class="text-lg">Approved</p>
@@ -99,10 +104,13 @@ require_once("./inc/securityCheck.php");
                         <h2 class="text-3xl font-bold"><?= $pendingCount?></h2>
                         <p class="text-lg">Pending</p>
                     </div>
+                    <div class="bg-blue-100 text-blue-800 rounded-xl p-4 flex flex-col items-center justify-center">
+                        <h2 class="text-3xl font-bold"><?= $completedCount?></h2>
+                        <p class="text-lg">Completed</p>
+                    </div>
                 </div>
             </div>
             <?php
-                
             } else {
                 ?>
             <div class="status-appointments p-4">

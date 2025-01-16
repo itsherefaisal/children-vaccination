@@ -1,10 +1,16 @@
+<?php 
+define("ROUTE", 'index');
+require_once("./inc/securityCheck.php");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Child Cares Vaccination</title>
+    <title>Child Cares Vaccination | Hospital</title>
     <link rel="icon" type="image/x-icon" href="../assets/images/logo.png">
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +27,6 @@
 
 <body class="bg-gray-100 overflow-hidden">
     <?php
-        define("ROUTE", 'index');
         require_once('./inc/navbar.php');
     ?>
 
@@ -29,124 +34,118 @@
         <?php
             require_once('./inc/aside.php');
         ?>
+        <?php 
+        require_once '../config.php';
+
+        $totalUsersQuery = "SELECT COUNT(*) AS total_users FROM parents";
+        $totalUsersResult = $conn->query($totalUsersQuery);
+        $totalUsers = $totalUsersResult->fetch_assoc()['total_users'] ?? 0;
+
+        $totalHospitalsQuery = "SELECT COUNT(*) AS total_hospitals FROM hospitals";
+        $totalHospitalsResult = $conn->query($totalHospitalsQuery);
+        $totalHospitals = $totalHospitalsResult->fetch_assoc()['total_hospitals'] ?? 0;
+
+        $latestAppointmentsQuery = "SELECT a.appointment_id, p.first_name AS parent_first_name, p.last_name AS parent_last_name, c.name AS child_name, h.name AS hospital_name, v.name AS vaccine_name, a.appointment_date, a.status
+        FROM appointments a
+        JOIN parents p ON a.parent_id = p.parent_id
+        JOIN children c ON a.child_id = c.child_id
+        JOIN hospitals h ON a.hospital_id = h.hospital_id
+        JOIN vaccines v ON a.vaccine_id = v.vaccine_id
+        ORDER BY a.appointment_date DESC
+        LIMIT 5";
+        $latestAppointmentsResult = $conn->query($latestAppointmentsQuery);
+
+        $latestVaccinesQuery = "SELECT vaccine_id, name, recommended_age, doses_required, status FROM vaccines ORDER BY created_at DESC LIMIT 5";
+        $latestVaccinesResult = $conn->query($latestVaccinesQuery);
+        ?>
+
         <section class="w-full max-w-[1700px] mx-auto h-full bg-white p-6 overflow-x-hidden overflow-y-auto">
-            <div class="covid-chart px-8 pb-8 pt-4 bg-zinc-200 rounded-xl">
-                <h3 class="text-center py-2">Covid 19 Overall Cases</h3>
-                <canvas id="covidChart" class="w-full" height="250px"></canvas>
-            </div>
-            <div class="status-appointments p-4">
-                <h2 class="text-xl font-bold my-4 pl-4">Appointments</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 overflow-x-auto gap-4">
-                    <!-- Approved -->
-                    <div class="bg-green-100 text-green-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">48</h2>
-                        <p class="text-lg">Approved</p>
-                    </div>
-                    <!-- Rejected -->
-                    <div class="bg-red-100 text-red-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">12</h2>
-                        <p class="text-lg">Rejected</p>
-                    </div>
-                    <!-- Pending -->
-                    <div class="bg-yellow-100 text-yellow-800 rounded-xl p-4 flex flex-col items-center justify-center">
-                        <h2 class="text-3xl font-bold">15</h2>
-                        <p class="text-lg">Pending</p>
-                    </div>
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-purple-600 text-white p-4 rounded-lg text-center">
+                    <h2 class="text-xl font-semibold">Total Users</h2>
+                    <p class="text-3xl font-bold"><?= $totalUsers ?></p>
+                </div>
+                <div class="bg-blue-600 text-white p-4 rounded-lg text-center">
+                    <h2 class="text-xl font-semibold">Total Hospitals</h2>
+                    <p class="text-3xl font-bold"><?= $totalHospitals ?></p>
                 </div>
             </div>
 
+            <div class="vaccines px-8 pb-8 pt-4 bg-zinc-200 rounded-xl mb-6">
+                <h1 class="text-2xl font-bold text-[#66347F] mb-4">Latest Vaccines</h1>
+                <table class="min-w-full bg-white table-auto border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-800">
+                            <th class="border border-gray-300 px-4 py-2">Vaccine ID</th>
+                            <th class="border border-gray-300 px-4 py-2">Vaccine Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Recommended Age</th>
+                            <th class="border border-gray-300 px-4 py-2">Doses Required</th>
+                            <th class="border border-gray-300 px-4 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $latestVaccinesResult->fetch_assoc()) : ?>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['vaccine_id']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['name']) ?></td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                <?= htmlspecialchars($row['recommended_age']) ?></td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['doses_required']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['status']) ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="appointments px-8 pb-8 pt-4 bg-zinc-200 rounded-xl mb-6">
+                <h1 class="text-2xl font-bold text-[#66347F] mb-4">Latest Appointments</h1>
+                <table class="min-w-full bg-white table-auto border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-800">
+                            <th class="border border-gray-300 px-4 py-2">Appointment ID</th>
+                            <th class="border border-gray-300 px-4 py-2">Parent Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Child Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Hospital Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Vaccine Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Appointment Date</th>
+                            <th class="border border-gray-300 px-4 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $latestAppointmentsResult->fetch_assoc()) : ?>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['appointment_id']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                <?= htmlspecialchars(($row['parent_first_name'] . ' ' . $row['parent_last_name'])) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['child_name']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['hospital_name']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['vaccine_name']) ?>
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                <?= htmlspecialchars($row['appointment_date']) ?></td>
+                            <td class="border border-gray-300 px-4 py-2"><?= htmlspecialchars($row['status']) ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+
         </section>
+
+        <?php
+        $conn->close();
+        ?>
+
     </main>
-    <script src="../frameworks/chartjs/chart.js"></script>
     <script defer>
-    // Fetch COVID-19 data
-    async function fetchCovidData() {
-        const response = await fetch('https://disease.sh/v3/covid-19/historical/all?lastdays=all');
-        const data = await response.json();
-
-        // Process data for yearly statistics
-        const years = {};
-        Object.keys(data.cases).forEach(date => {
-            const year = new Date(date).getFullYear();
-            if (!years[year]) years[year] = {
-                cases: 0,
-                deaths: 0,
-                recovered: 0
-            };
-
-            years[year].cases += data.cases[date];
-            years[year].deaths += data.deaths[date];
-            years[year].recovered += data.recovered[date];
-        });
-
-        return years;
-    }
-
-    // Render Chart.js chart
-    async function renderCovidChart() {
-        const covidData = await fetchCovidData();
-        const years = Object.keys(covidData);
-        const cases = years.map(year => covidData[year].cases);
-        const deaths = years.map(year => covidData[year].deaths);
-        const recovered = years.map(year => covidData[year].recovered);
-
-        const ctx = document.getElementById('covidChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [{
-                        label: 'Cases',
-                        data: cases,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: true,
-                        tension: 0.4,
-                    },
-                    {
-                        label: 'Deaths',
-                        data: deaths,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: true,
-                        tension: 0.4,
-                    },
-                    {
-                        label: 'Recovered',
-                        data: recovered,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        fill: true,
-                        tension: 0.4,
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                },
-                scales: {
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Counts'
-                        },
-                        beginAtZero: true
-                    },
-                },
-            },
-        });
-    }
-
-    renderCovidChart();
-    
     const toggleBtn = document.getElementById('noti-toggle-btn');
     const notiContainer = document.getElementById('noti-container');
 

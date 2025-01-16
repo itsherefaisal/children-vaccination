@@ -41,25 +41,12 @@
         <section class="w-full max-w-[1700px] mx-auto h-full bg-white p-8 overflow-x-hidden overflow-y-auto">
             <div class="w-full flex items-center justify-between py-4">
                 <h2 class="text-2xl font-bold text-center text-purple-600">Available Vaccines</h2>
-                <button onclick="window.location.href = './make_appointment.php'"
+                <button onclick="window.location.href = './add_vaccine.php'"
                     class="py-2 px-4 bg-purple-500 transition hover:bg-purple-600 text-gray-200 rounded-xl">
                     Add Vaccine
                 </button>
             </div>
-            <table id="vaccines-details" class="min-w-full bg-white table-auto border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-100 text-gray-800">
-                        <th class="border border-gray-300 px-4 py-2">Vaccine ID</th>
-                        <th class="border border-gray-300 px-4 py-2">Vaccine Name</th>
-                        <th class="border border-gray-300 px-4 py-2">Recommended Age</th>
-                        <th class="border border-gray-300 px-4 py-2">Doses Required</th>
-                        <th class="border border-gray-300 px-4 py-2">Stock Available</th>
-                        <th class="border border-gray-300 px-4 py-2">Status</th>
-                        <th class="border border-gray-300 px-4 py-2 text-center">Stock Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
+            <?php
                         require_once '../../config.php';    
                         $hospital_id = $_SESSION['hospital_id'];    
 
@@ -81,55 +68,81 @@
                         $stmt->bind_param("i", $hospital_id);
                         $stmt->execute();
                         $result = $stmt->get_result();
-
+                        $count_vaccines = null;
                         if ($result->num_rows > 0) {
+                            $count_vaccines = false;
+
+?>
+            <table id="vaccines-details" class="min-w-full bg-white table-auto border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-800">
+                        <th class="border border-gray-300 px-4 py-2">Vaccine ID</th>
+                        <th class="border border-gray-300 px-4 py-2">Vaccine Name</th>
+                        <th class="border border-gray-300 px-4 py-2">Recommended Age</th>
+                        <th class="border border-gray-300 px-4 py-2">Doses Required</th>
+                        <th class="border border-gray-300 px-4 py-2">Stock Available</th>
+                        <th class="border border-gray-300 px-4 py-2">Status</th>
+                        <th class="border border-gray-300 px-4 py-2 text-center">Stock Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                             while ($row = $result->fetch_assoc()) {
                     ?>
-                        <tr>
-                            <td class="border border-gray-300 px-4 py-2"><?php echo htmlspecialchars($row['vaccine_id']); ?>
-                            </td>
-                            <td class="border border-gray-300 px-4 py-2">
-                                <?php echo htmlspecialchars($row['vaccine_name']); ?></td>
-                            <td class="border border-gray-300 px-4 py-2">
-                                <?php echo htmlspecialchars($row['recommended_age']); ?></td>
-                            <td class="border border-gray-300 px-4 py-2">
-                                <?php echo htmlspecialchars($row['doses_required']); ?></td>
-                            <td class="border border-gray-300 px-4 py-2 stock-available-<?= $row['vaccine_id'];?>">
-                                <?php echo htmlspecialchars($row['stock_available']); ?></td>
-                            <td class="border border-gray-300 px-4 py-2">
-                                <?php echo htmlspecialchars($row['status']); ?>
-                            </td>
-                            <td class="border border-gray-300 px-4 py-2 text-center">
-                                <button class="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 increase-stock"
-                                    data-vaccine-id="<?php echo $row['vaccine_id']; ?>">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24"
-                                        fill="currentColor">
-                                        <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
-                                    </svg>
-                                </button>
-                                <button class="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 decrease-stock"
-                                    data-vaccine-id="<?php echo $row['vaccine_id']; ?>">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24"
-                                        fill="currentColor">
-                                        <path d="M5 11V13H19V11H5Z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2"><?php echo htmlspecialchars($row['vaccine_id']); ?>
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <?php echo htmlspecialchars($row['vaccine_name']); ?></td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <?php echo htmlspecialchars($row['recommended_age']); ?></td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <?php echo htmlspecialchars($row['doses_required']); ?></td>
+                        <td class="border border-gray-300 px-4 py-2 stock-available-<?= $row['vaccine_id'];?>">
+                            <?php echo htmlspecialchars($row['stock_available']); ?></td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <?php echo htmlspecialchars($row['status']); ?>
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            <button class="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 increase-stock"
+                                data-vaccine-id="<?php echo $row['vaccine_id']; ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                                </svg>
+                            </button>
+                            <button class="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 decrease-stock"
+                                data-vaccine-id="<?php echo $row['vaccine_id']; ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path d="M5 11V13H19V11H5Z"></path>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
                     <?php 
                             }
-                        } else {
-                            echo '<tr><td colspan="7" class="px-4 py-2 text-center text-red-500">No vaccines available for this hospital</td></tr>';
-                        }
-                        $conn->close();
-                    ?>
+                        
+                        ?>
                 </tbody>
             </table>
+            <?php 
+            } else {
+                $count_vaccines = true;
+                echo '<div><h2 class="px-4 py-2 text-center text-lg text-red-500">No vaccines available</h2></div>';
+            }
+            $conn->close();
+            ?>
         </section>
 
     </main>
-
-    <script src="../../frameworks/datatable/datatable.js"></script>
+    <?php 
+    if (!$count_vaccines) {
+    ?>
+        <script src="../../frameworks/datatable/datatable.js"></script>
+    <?php
+        }
+    ?>
     <script defer>
     const toggleBtn = document.getElementById('noti-toggle-btn');
     const notiContainer = document.getElementById('noti-container');
@@ -148,6 +161,9 @@
     notiContainer.addEventListener('click', (e) => {
         e.stopPropagation();
     });
+    <?php 
+if (!$count_vaccines) {
+    ?>
     document.addEventListener("DOMContentLoaded", function() {
         const table = new DataTable("#vaccines-details", {
             searchable: true,
@@ -157,6 +173,11 @@
             perPageSelect: [5, 10, 15],
         });
     });
+    <?php
+}
+
+?>
+
 
     $(document).ready(function() {
         $(".increase-stock").click(function() {

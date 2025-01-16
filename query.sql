@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2025 at 10:53 AM
+-- Generation Time: Jan 16, 2025 at 01:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,13 @@ CREATE TABLE `admins` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`admin_id`, `username`, `email`, `password`, `created_at`) VALUES
+(1, 'Admin', 'admin@gmail.com', '$2y$10$kACH0IFtdl7O/nARe1phYujdyu63l1geza8JV0Y4ay6/bg9hqIN9G', '2025-01-16 14:53:46');
+
 -- --------------------------------------------------------
 
 --
@@ -56,8 +63,11 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`appointment_id`, `parent_id`, `child_id`, `hospital_id`, `vaccine_id`, `appointment_date`, `status`) VALUES
-(11, 10, 10, 1, 1, '2026-02-03', 'Completed'),
-(13, 9, 12, 1, 1, '2025-03-05', 'Pending');
+(14, 12, 13, 1, 1, '2027-02-02', 'Approved'),
+(15, 12, 14, 2, 1, '2026-02-03', 'Pending'),
+(16, 11, 15, 6, 1, '2004-02-04', 'Pending'),
+(17, 11, 16, 3, 1, '2008-02-03', 'Pending'),
+(18, 11, 15, 6, 8, '2004-02-02', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -79,9 +89,10 @@ CREATE TABLE `children` (
 --
 
 INSERT INTO `children` (`child_id`, `parent_id`, `name`, `dob`, `gender`, `vaccination_status`) VALUES
-(10, 10, 'Testo', '2005-02-22', 'Male', 'Up-to-date'),
-(11, 10, 'Testi', '2008-02-04', 'Female', 'Up-to-date'),
-(12, 9, 'Honeeyyy', '2010-02-03', 'Female', 'Up-to-date');
+(13, 12, 'P2 child', '2003-02-03', 'Male', 'Up-to-date'),
+(14, 12, 'P2 Child2', '2006-02-03', 'Female', 'Up-to-date'),
+(15, 11, 'P1 child1', '2006-02-03', 'Male', 'Up-to-date'),
+(16, 11, 'P1 Child2', '2004-02-03', 'Male', 'Up-to-date');
 
 -- --------------------------------------------------------
 
@@ -107,7 +118,12 @@ CREATE TABLE `hospitals` (
 --
 
 INSERT INTO `hospitals` (`hospital_id`, `name`, `email`, `password`, `address`, `contact_number`, `city`, `state`, `country`, `created_at`) VALUES
-(1, 'Kevalti Larkana', 'kevalti@gmail.com', '$2y$10$yeaSjNiAoCCchenrqkS2GuMi9PyNRZB8Nzbvn7g8uRqMEwOQMhtBi', 'Pakistan 123 street, larkana', '1122', 'larkana', 'sindh', 'pakistan', '2025-01-13 21:33:35');
+(1, 'Kevalti Larkana', 'kevalti@gmail.com', '$2y$10$yeaSjNiAoCCchenrqkS2GuMi9PyNRZB8Nzbvn7g8uRqMEwOQMhtBi', 'Pakistan 123 street, larkana 123', '1122', 'larkana', 'sindh', 'pakistan', '2025-01-13 21:33:35'),
+(2, 'Gareeba', 'gareeba@gmail.com', '$2y$10$i7QuKtvl7KLBvGdGYt9tS.sWneEoXflJeJ1pO5a.lEh5Aj.L7577W', 'Gareeba badh near larkana kfc', '323239232', 'Larkana', 'Sindh', 'Pakistan', '2025-01-16 14:21:40'),
+(3, 'Edhi', 'edhi@gmail.com', '$2y$10$rsz7OsE/HIkQEjQeotoGWe.5as0jFhRfxcNrQiDBcnn0RxFcuHzc2', 'House 1', '032832322', 'Karachi', 'Sindh', 'Pakistan', '2025-01-16 16:22:35'),
+(4, 'Dr Kouro Mal Clinic, Larkana', 'kouro@gmail.com', '$2y$10$xPyADd/4vZVxhvY1BtRfS.XQ2e.eaG0Msjw4iV6MXLk07x8la4I4i', 'Dr Kouro Mal Clinic, Larkana', '3323923232', 'Larkana', 'Sindh', 'Pakistan', '2025-01-16 17:34:34'),
+(5, 'Indus hospital, Larkana.', 'indus@gmail.com', '$2y$10$UanRPB5phYpXAkXiUjXdXOUlgXQwcsD2V64BQxS4zHe1llbTKaHsO', 'Indus hospital, Larkana.', '3223232332', 'Larkana', 'Sindh', 'Pakistan', '2025-01-16 17:35:04'),
+(6, 'Hamza Dental Implants And Orthodontics Clinic, Larkana', 'hamza@gmail.com', '$2y$10$eFV2RuYvUUFCp1LrUuDB3ugqSq9jG4I.XpOj/2jEq237qB87Qit1C', 'Hamza Dental Implants And Orthodontics Clinic, Larkana', '2323232323', 'Larkana', 'Sindh', 'Pakistan', '2025-01-16 17:35:46');
 
 -- --------------------------------------------------------
 
@@ -127,7 +143,20 @@ CREATE TABLE `hospital_vaccines` (
 --
 
 INSERT INTO `hospital_vaccines` (`id`, `hospital_id`, `vaccine_id`, `stock_available`) VALUES
-(1, 1, 1, 4);
+(1, 1, 1, 106),
+(2, 2, 1, 24),
+(3, 3, 1, 23),
+(4, 5, 5, 24),
+(5, 5, 9, 25),
+(6, 5, 6, 23),
+(7, 5, 7, 2),
+(8, 5, 1, 23),
+(9, 5, 8, 5),
+(10, 6, 1, 25),
+(11, 6, 8, 345),
+(12, 6, 9, 323),
+(13, 6, 5, 80),
+(14, 6, 6, 35);
 
 -- --------------------------------------------------------
 
@@ -154,15 +183,8 @@ CREATE TABLE `parents` (
 --
 
 INSERT INTO `parents` (`parent_id`, `first_name`, `last_name`, `email`, `password`, `country`, `city`, `address`, `phone_number`, `type`, `created_at`) VALUES
-(1, 'd', 'd', 'deletepleasename@gmail.com', '$2y$10$kZT5y6AQ7ihRbadcMNgPe.uvnpEHT//AWCVgnYYnj6gvfCtQ1thZ.', 'Pakistan', 'larkana', '192.\r\npakistan', '03337545997', 'Father', '2025-01-13 19:57:26'),
-(3, 'faisal', 'king', 'deletepleasename1@gmail.com', '$2y$10$3BOfCVOEnZYo5Ce1DX9W8eScuXypVhGb0RFDo7KpTPZSF6Nnrgccq', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:15:12'),
-(4, 'Faisal', 'Khan', 'fmugheri83@gmail.com', '$2y$10$STl/4PHjjZS6s4PGeNQiUeQSRzzEXzcQYNiiYDdprbMFPvAMOO0cu', 'pakistan', 'larkana', '123 street', '32393232332', 'Father', '2025-01-13 20:28:09'),
-(5, 'faisal', 'king', 'deletepleasename12@gmail.com', '$2y$10$iUXeEUSACN451ylhiTkx.Ow73SsNwmIm8hPM/158qYsT0u6jRhojm', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:31:51'),
-(6, 'faisal', 'king', 'deletepleasename2@gmail.com', '$2y$10$doCfkbhrPGSx8.NimtX.4uN34ylDelCaOCsaCDd/t/80dnq4NvPmK', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:33:23'),
-(7, 'faisal', 'king', 'deletepleasename3@gmail.com', '$2y$10$8NvJl.g9xqI0OTcxPg7Pju3KtlOeNFSMMnjQ1IcDySQ12PENtrXmO', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:33:48'),
-(8, 'faisal', 'king', 'deletepleasename4@gmail.com', '$2y$10$qK9MlUd5wEMGbs/F7O7f4eFPvnv9spK04JMMjUKjlBm5jPBvraWAy', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:34:21'),
-(9, 'faisal', 'king', 'deletepleasename5@gmail.com', '$2y$10$6zzIYypLdaKlNApAi9EjZegxtUmu9R8YG0fa8dln..cV69Cmtmu8m', 'Pakistan', 'larkana', '192.\\r\\npakistan', '03337545997', 'Father', '2025-01-13 20:35:19'),
-(10, 'Faisal', 'Khan', 'deletepleasename8@gmail.com', '$2y$10$cNsbnGEvBeHbBJ2nqhHIduFgDzLDSBf1T86jtwE.ngB3YYsNKLY1i', 'Pakistan', 'Larkana', '192. street e2', '03337545997', 'Father', '2025-01-13 21:12:27');
+(11, 'Parent', 'PLast', 'parent1@gmail.com', '$2y$10$a3F5Oexi/Gs5LegvSPEsKOG5gsZiRYJ1kiuIHeBnb7iZCVUT79ftC', 'Pakistan', 'Larkana', '123 street larkana', '33375454594', 'Father', '2025-01-16 17:27:26'),
+(12, 'Parent', 'PLast', 'parent2@gmail.com', '$2y$10$j0/RQY8XTkW6azAig8hkkOcf0e37ifRyJOSqe1KaUC6BlMKr4ZHvy', 'Pakistan', 'Karachi', '123 street karachi', '33375454232', 'Father', '2025-01-16 17:28:16');
 
 -- --------------------------------------------------------
 
@@ -200,7 +222,12 @@ CREATE TABLE `vaccines` (
 --
 
 INSERT INTO `vaccines` (`vaccine_id`, `name`, `description`, `doses_required`, `recommended_age`, `status`, `created_at`) VALUES
-(1, 'Polio', 'testttt', 1, 'Birth', 'Available', '2025-01-14 16:08:47');
+(1, 'Polio', 'testttt', 1, 'Birth', 'Available', '2025-01-14 16:08:47'),
+(5, 'Hepatitis B', 'Hepatitis B is an infectious disease caused by the hepatitis B virus that affects the liver; it is a type of viral hepatitis. It can cause both acute and chronic infection. Many people have no symptoms during an initial infection.', 3, '14', 'Available', '2025-01-16 12:31:32'),
+(6, 'Influenza', 'Hepatitis B\r\nInfluenza\r\nInfluenza\r\nInfluenza, commonly known as the flu, is an infectious disease caused by influenza viruses. Symptoms range from mild to severe and often include fever, runny nose, sore throat, muscle pain, headache, coughing, and fatigue.', 3, '14', 'Available', '2025-01-16 12:31:53'),
+(7, 'MMR vaccine', 'Hepatitis B\r\nInfluenza\r\nMMR vaccine\r\nMMR vaccine\r\nThe MMR vaccine is a vaccine against measles, mumps, and rubella, abbreviated as MMR. The first dose is generally given to children around 9 months to 15 months of age, with a second dose at 15 months to 6 years of age, with at least four weeks between the doses.', 3, '13', 'Available', '2025-01-16 12:32:17'),
+(8, 'Meningococcal', 'Meningococcal disease describes infections caused by the bacterium Neisseria meningitidis. It has a high mortality rate if untreated but is vaccine-preventable. While best known as a cause of meningitis, it can also result in sepsis, which is an even more damaging and dangerous condition.', 2, '16', 'Available', '2025-01-16 12:32:38'),
+(9, 'Hib vaccine', 'The Haemophilus influenzae type B vaccine, also known as Hib vaccine, is a vaccine used to prevent Haemophilus influenzae type b infection. In countries that include it as a routine vaccine, rates of severe Hib infections have decreased more than 90%.', 2, '15', 'Available', '2025-01-16 12:33:04');
 
 --
 -- Indexes for dumped tables
@@ -275,37 +302,37 @@ ALTER TABLE `vaccines`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `children`
 --
 ALTER TABLE `children`
-  MODIFY `child_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `child_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `hospitals`
 --
 ALTER TABLE `hospitals`
-  MODIFY `hospital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `hospital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `hospital_vaccines`
 --
 ALTER TABLE `hospital_vaccines`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `parents`
 --
 ALTER TABLE `parents`
-  MODIFY `parent_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `parent_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `vaccination_schedule`
@@ -317,7 +344,7 @@ ALTER TABLE `vaccination_schedule`
 -- AUTO_INCREMENT for table `vaccines`
 --
 ALTER TABLE `vaccines`
-  MODIFY `vaccine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `vaccine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
